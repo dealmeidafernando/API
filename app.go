@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
@@ -28,6 +29,7 @@ func (a *App) InitializeConection(user, password, dbname string) {
 	}
 
 	a.Router = mux.NewRouter()
+	a.initializeRoutes()
 
 }
 
@@ -38,9 +40,13 @@ func (a *App) Run(addr string) {
 
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/jobs", a.getJobs).Methods("GET")
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.getJobID).Methods("GET") // ID
+	a.Router.HandleFunc("/job", a.createJob).Methods("POST")
+	a.Router.HandleFunc("/updatejob", a.updateJob).Methods("PUT")           // ANALISE // ID
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.deleteJob).Methods("DELETE") // ID
 }
 
-func (a *App) getJobs(w http.ResponseWriter, r *http.Request) {
+func (a *App) getJobs(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -59,7 +65,29 @@ func (a *App) getJobs(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, jobs)
 }
 
-func (a *App) createJob(w http.ResponseWriter, r *http.Request) {
+func (a *App) getJobID(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid job ID")
+		return
+	}
+
+	u := job{ID: id}
+	if err := u.getJobID(a.DB); err != nil {
+		switch err {
+		case sql.ErrNoRows:
+			respondWithError(w, http.StatusNotFound, "Job not found")
+		default:
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+		}
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, u)
+}
+
+func (a *App) createJob(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
 	var u job
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
@@ -74,6 +102,51 @@ func (a *App) createJob(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusCreated, u)
+}
+
+func (a *App) updateJob(w http.ResponseWriter, r *http.Request) { // TODO
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid job ID")
+		return
+	}
+	var u job
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&u); err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid resquest payload")
+		return
+	}
+	defer r.Body.Close()
+	u.ID = id
+
+	if err := u.updateJob(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, u)
+}
+
+func (a *App) deleteJob(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+	vars := mux.Vars(r)
+	id, err := strconv.Atoi(vars["id"])
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid Job ID")
+		return
+	}
+
+	u := job{ID: id}
+	if err := u.deleteJob(a.DB); err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, map[string]string{"result": "success"})
+}
+
+func respondWithError(w http.ResponseWriter, code int, message string) {
+	respondWithJSON(w, code, map[string]string{"error": message})
 }
 
 func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {

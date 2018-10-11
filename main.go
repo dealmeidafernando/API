@@ -2,7 +2,7 @@ package main
 
 func main() {
 	a := App{}
-	a.InitializeConection("root", "", "vagas")
+	a.InitializeConection("root", "123456", "vagas")
 
-	a.Run(":8080")
+	a.Run(":3000")
 }
