@@ -42,8 +42,8 @@ func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/jobs", a.getJobs).Methods("GET")
 	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.getJobID).Methods("GET") // ID
 	a.Router.HandleFunc("/job", a.createJob).Methods("POST")
-	a.Router.HandleFunc("/updatejob", a.updateJob).Methods("PUT")           // ANALISE // ID
-	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.deleteJob).Methods("DELETE") // ID
+	a.Router.HandleFunc("/updatejob/{id:[0-9]+}", a.updateJob).Methods("PUT") // ANALISE // ID
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.deleteJob).Methods("DELETE")   // ID
 }
 
 func (a *App) getJobs(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
