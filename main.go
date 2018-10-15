@@ -1,8 +1,13 @@
 package main
 
 func main() {
-	a := App{}
-	a.InitializeConection("root", "123456", "vagas")
+	config, err := LoadConfig()
+	if err != nil {
+		panic(err)
+	}
 
-	a.Run(":3000")
+	a := App{}
+	a.InitializeConection(config.AppUser, config.AppPassword, config.AppDB)
+
+	a.Run(config.AppPort)
 }
