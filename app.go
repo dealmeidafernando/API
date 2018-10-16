@@ -40,13 +40,13 @@ func (a *App) Run(addr string) {
 
 func (a *App) initializeRoutes() {
 	a.Router.HandleFunc("/jobs", a.getJobs).Methods("GET")
-	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.getJobID).Methods("GET")       // ID
-	a.Router.HandleFunc("/job", a.createJob).Methods("POST")                  //jobs
-	a.Router.HandleFunc("/updatejob/{id:[0-9]+}", a.updateJob).Methods("PUT") // ANALISE PATCH
-	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.deleteJob).Methods("DELETE")   // ID
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.getJobID).Methods("GET")
+	a.Router.HandleFunc("/jobs", a.createJob).Methods("POST")
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.updateJob).Methods("PUT")
+	a.Router.HandleFunc("/jobs/{id:[0-9]+}", a.deleteJob).Methods("DELETE")
 }
 
-func (a *App) getJobs(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+func (a *App) getJobs(w http.ResponseWriter, r *http.Request) {
 	count, _ := strconv.Atoi(r.FormValue("count"))
 	start, _ := strconv.Atoi(r.FormValue("start"))
 
@@ -65,7 +65,7 @@ func (a *App) getJobs(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
 	respondWithJSON(w, http.StatusOK, jobs)
 }
 
-func (a *App) getJobID(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+func (a *App) getJobID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -87,7 +87,7 @@ func (a *App) getJobID(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
 	respondWithJSON(w, http.StatusOK, u)
 }
 
-func (a *App) createJob(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+func (a *App) createJob(w http.ResponseWriter, r *http.Request) {
 	var u job
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&u); err != nil {
@@ -104,7 +104,7 @@ func (a *App) createJob(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
 	respondWithJSON(w, http.StatusCreated, u)
 }
 
-func (a *App) updateJob(w http.ResponseWriter, r *http.Request) { // TODO
+func (a *App) updateJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {
@@ -128,7 +128,7 @@ func (a *App) updateJob(w http.ResponseWriter, r *http.Request) { // TODO
 	respondWithJSON(w, http.StatusOK, u)
 }
 
-func (a *App) deleteJob(w http.ResponseWriter, r *http.Request) { // ROUTE DONE
+func (a *App) deleteJob(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
 	if err != nil {

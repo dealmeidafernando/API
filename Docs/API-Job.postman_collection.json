@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "cb10cac3-d25c-4c2d-a78f-350c4b035261",
+		"name": "API-Job",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3000/jobs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetByID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3000/jobs/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jobs",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateJob",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"id\":3,\n\t\"title\":\"teste\",\n\t\"description\":\"teste teste\",\n\t\"salary\":2100,\n\t\"state\":\"sp\",\n\t\"city\":\"sao-paulo\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:3000/jobs",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateJob",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"title\":\"Programador\",\n\t\"description\":\"Programar\",\n\t\"salary\":2100,\n\t\"state\":\"sp\",\n\t\"city\":\"sao-paulo\"\t\n}"
+				},
+				"url": {
+					"raw": "localhost:3000/jobs/3",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jobs",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteJob",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "localhost:3000/jobs/3",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"jobs",
+						"3"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
