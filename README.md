@@ -1,4 +1,4 @@
-# API job Documentation 
+# API Job Documentation 
 
 The API's main purpose is to provide resources for the Job:
 - Create a Job
